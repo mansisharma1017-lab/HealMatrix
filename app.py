@@ -116,6 +116,12 @@ def get_daily_tip():
 import nltk
 from fuzzywuzzy import fuzz
 
+import os
+
+if os.path.exists("appdata.db"):
+    os.remove("appdata.db")
+
+
 # Download nltk data (only first time)
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -211,6 +217,7 @@ def init_db():
             amount INTEGER,
             plan TEXT,
             timestamp TEXT
+            status TEXT DEFAULT 'PENDING'
         )
     """)
 
