@@ -165,9 +165,9 @@ if not os.path.exists(REPORTS_DIR):
     os.makedirs(REPORTS_DIR)
 
 app = Flask(__name__)
-ADMIN_USERNAME = "@harshmansi1017"
-ADMIN_PASSWORD = "200520041017@"
-ADMIN_EMAIL = "sharmamansi1031@gmail.com"
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+
 
 app.secret_key = os.getenv("SECRET_KEY")
 
@@ -561,6 +561,7 @@ def admin_login():
 
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             session["admin_logged_in"] = True
+            flash("Admin login successful", "success")
             return redirect("/admin")
         else:
             flash("Invalid Admin Credentials", "error")
@@ -947,13 +948,15 @@ def reset_password():
 
     flash("Password reset successful! Please login.", "success")
     return redirect("/login")
+
 @app.route('/manifest.json')
 def manifest():
-    return send_from_directory('static/pwa', 'manifest.json')
+    return send_from_directory('static', 'manifest.json')
 
 @app.route('/service_worker.js')
 def service_worker():
-    return send_from_directory('static/pwa', 'service_worker.js')
+    return send_from_directory('static', 'service_worker.js')
+
 
 if __name__ == "__main__":
     app.run()
