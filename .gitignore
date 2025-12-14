@@ -1,0 +1,23 @@
+# Secrets
+.env
+
+# Database
+appdata.db
+
+# User generated files
+reports/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+env/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

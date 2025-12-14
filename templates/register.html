@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Create Account{% endblock %}
+{% block content %}
+
+<div class="ios-card" style="max-width:460px;">
+
+    <h2 class="section-title">✨ Create Your Account</h2>
+
+    <p class="info-text">Join the AI Disease Predictor and start analyzing your symptoms.</p>
+
+    <form method="POST" action="/register">
+
+        <label><b>Username</b></label>
+        <input type="text" 
+               name="username" 
+               class="ios-input"
+               placeholder="Choose a unique username"
+               required>
+
+        <label><b>Password</b></label>
+        <input type="password" 
+               name="password" 
+               class="ios-input"
+               placeholder="Create a strong password"
+               required>
+
+        <label><b>Security Question</b></label>
+        <input type="text" 
+               name="security_question" 
+               class="ios-input"
+               placeholder="Example: What is your pet name?"
+               required>
+
+        <label><b>Security Answer</b></label>
+        <input type="text" 
+               name="security_answer" 
+               class="ios-input"
+               placeholder="Enter your answer"
+               required>
+
+        <button class="ios-btn" style="margin-top:12px;">Create Account</button>
+    </form>
+
+    <p class="info-text" style="margin-top:15px;">
+        Already have an account?  
+        <a href="/login" style="color:#007AFF; font-weight:600;">Login</a>
+    </p>
+
+</div>
+
+{% endblock %}

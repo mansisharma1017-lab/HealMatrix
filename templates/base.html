@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- ================= iOS / PWA ================= -->
+    <!-- Manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+    <!-- iOS support -->
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0d6efd">
+
+    <!-- Service Worker -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("{{ url_for('static', filename='service_worker.js') }}");
+        }
+    </script>
+
+    <!-- ================= STYLES ================= -->
+    <style>
+    :root {
+        --primary: #0d6efd;
+        --bg: #f5f7fa;
+        --text: #1a1a1a;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+    }
+
+    /* NAVBAR */
+    .navbar {
+        background: var(--primary);
+        color: white;
+        padding: 15px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    .navbar a {
+        color: white;
+        font-weight: 600;
+        margin-left: 20px;
+        text-decoration: none;
+    }
+
+    /* CONTAINER */
+    .container {
+        max-width: 900px;
+        margin: 35px auto;
+        padding: 20px;
+    }
+
+    /* FLASH */
+    .flash {
+        padding: 12px;
+        border-radius: 8px;
+        margin: 15px 0;
+    }
+    .flash-success { background: #d1e7dd; color:#0f5132; }
+    .flash-error   { background: #f8d7da; color:#842029; }
+    .flash-info    { background: #cff4fc; color:#055160; }
+
+    /* iOS CARD */
+    .ios-card {
+        background: rgba(255,255,255,0.8);
+        backdrop-filter: blur(20px);
+        border-radius: 22px;
+        padding: 22px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        margin: 18px auto;
+    }
+
+    .section-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 14px;
+    }
+
+    .ios-btn {
+        width: 100%;
+        background: #007AFF;
+        padding: 14px;
+        border-radius: 14px;
+        font-size: 18px;
+        font-weight: 600;
+        border: none;
+        color: white;
+    }
+
+    .ios-input {
+        width: 100%;
+        padding: 14px;
+        font-size: 16px;
+        border-radius: 12px;
+        border: 1px solid #d1d1d6;
+        margin-bottom: 15px;
+    }
+
+    .suggest {
+        display: inline-block;
+        padding: 6px 14px;
+        background: #e6ecff;
+        border-radius: 14px;
+        font-size: 14px;
+        margin-right: 6px;
+        cursor: pointer;
+    }
+
+    .btn {
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-primary { background:#007AFF; color:white; }
+    .btn-danger { background:#ff3b30; color:white; }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div style="font-size:22px;font-weight:700;">🩺 HealMatrix</div>
+    <div>
+        {% if session.get('user_id') %}
+            <a href="/">Home</a>
+            <a href="/history">History</a>
+            <a onclick="showLogoutPopup()" style="cursor:pointer;">Logout</a>
+        {% else %}
+            <a href="/">Home</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+    {% for category, msg in get_flashed_messages(with_categories=true) %}
+        <div class="flash flash-{{ category }}">{{ msg }}</div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+</div>
+
+<!-- LOGOUT POPUP -->
+<div id="logoutModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);">
+    <div style="width:350px;margin:200px auto;background:white;padding:25px;border-radius:12px;text-align:center;">
+        <h3>Are you sure you want to logout?</h3>
+        <button class="btn btn-primary" onclick="window.location='/logout'">OK</button>
+        <button class="btn btn-danger" onclick="hideLogoutPopup()">Cancel</button>
+    </div>
+</div>
+
+<script>
+function showLogoutPopup() {
+    document.getElementById("logoutModal").style.display = "block";
+}
+function hideLogoutPopup() {
+    document.getElementById("logoutModal").style.display = "none";
+}
+</script>
+
+</body>
+</html>

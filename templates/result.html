@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Your Result{% endblock %}
+{% block content %}
+
+<div class="ios-card" style="max-width: 520px;">
+
+    <!-- HEADER -->
+    <h2 class="section-title">🩺 Diagnosis Result</h2>
+
+    <!-- Emergency Warning -->
+    {% if emergency_level == "HIGH" %}
+        <div class="ios-card" style="background:#ffe6e6; border-left:5px solid #ff3b30;">
+            <h3 style="color:#ff3b30; margin:0;">⚠️ Emergency Detected</h3>
+            {% for w in warnings %}
+                <p style="margin:6px 0;">{{ w }}</p>
+            {% endfor %}
+            <p style="font-weight:600; color:#ff3b30;">Seek medical help immediately.</p>
+        </div>
+    {% elif emergency_level == "MEDIUM" %}
+        <div class="ios-card" style="background:#fff6d6; border-left:5px solid #ffcc00;">
+            <h3 style="color:#b88600; margin:0;">⚠️ Possible Health Concern</h3>
+            {% for w in warnings %}
+                <p style="margin:6px 0;">{{ w }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- DISEASE BOX -->
+    <div class="ios-card" style="text-align:center;">
+        <h2 style="font-size:28px; margin-bottom:6px;">{{ result.name }}</h2>
+        <p class="info-text" style="font-size:16px;">Predicted Disease</p>
+
+        <div style="margin-top:12px; padding:14px; background:#f5f7ff; border-radius:16px;">
+            <p style="font-size:20px; font-weight:700; margin:4px 0;">
+                Probability: {{ result.probability }}%
+            </p>
+            <p style="font-size:17px; margin:3px 0;">
+                Severity: <b>{{ result.severity }}</b>
+            </p>
+            <p class="info-text" style="margin-top:3px;">
+                Health Score: <b>{{ result.health_score }}</b>
+            </p>
+        </div>
+    </div>
+
+    <!-- MEDICINE & PRECAUTION SECTION -->
+    <div class="ios-card">
+        <h3 class="section-title" style="font-size:20px;">💊 Suggested Medicine</h3>
+        <p>{{ result.medicine }}</p>
+
+        <h3 class="section-title" style="font-size:20px;">🛡 Precautions</h3>
+        <p>{{ result.precautions }}</p>
+    </div>
+
+    <!-- USER INPUT -->
+    <div class="ios-card">
+        <h3 class="section-title" style="font-size:20px;">📝 Your Symptoms</h3>
+        <p>{{ user_text }}</p>
+    </div>
+
+    <!-- BUTTONS -->
+    <button onclick="window.location='/'" class="ios-btn" style="margin-top:10px;">
+        🔄 Predict Again
+    </button>
+
+    <button onclick="window.location='/download_report'" 
+            class="premium-btn" 
+            style="margin-top:12px;">
+        📄 Download Report
+    </button>
+
+</div>
+
+{% endblock %}

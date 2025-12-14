@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}History{% endblock %}
+{% block content %}
+
+<div class="ios-card" style="max-width: 650px;">
+
+    <h2 class="section-title" style="text-align:center;">📜 Prediction History</h2>
+
+    {% if history|length == 0 %}
+        <p class="info-text" style="margin-top:10px;">No predictions yet.</p>
+    {% else %}
+
+        <!-- Loop through history -->
+        {% for h in history %}
+        <div class="ios-card history-item"
+             style="margin-top:18px; padding:18px; transition:0.2s;">
+            
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:20px; font-weight:600;">
+                    {{ h.predicted }}
+                </h3>
+
+                <span style="
+                    background:#e4e7fb;
+                    padding:6px 14px;
+                    border-radius:12px;
+                    font-size:14px;
+                    color:#3b4cca;">
+                    Score: {{ h.health_score }}
+                </span>
+            </div>
+
+            <p style="margin:8px 0 5px 0;">
+                <b>Symptoms:</b> {{ h.symptoms|join(", ") }}
+            </p>
+
+            <p style="margin:6px 0; font-size:14px; color:#6e6e73;">
+                {{ h.timestamp }}
+            </p>
+
+            <button class="ios-btn" 
+                    style="margin-top:10px; padding:10px; font-size:15px;"
+                    onclick="downloadReport()">
+                Download Report
+            </button>
+        </div>
+        {% endfor %}
+
+    {% endif %}
+
+</div>
+
+
+<script>
+function downloadReport() {
+    window.location.href = "/download_report";
+}
+</script>
+
+<style>
+.history-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+</style>
+
+{% endblock %}

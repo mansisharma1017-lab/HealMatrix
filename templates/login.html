@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+
+<div class="ios-card" style="max-width:420px;">
+
+    <h2 class="section-title">🔐 Login</h2>
+
+    <p class="info-text">Welcome back! Please login to continue.</p>
+
+    <form method="POST" action="/login">
+
+        <label>Username</label>
+        <input type="text" 
+               name="username" 
+               class="ios-input" 
+               placeholder="Enter your username"
+               required>
+
+        <label>Password</label>
+        <input type="password" 
+               name="password" 
+               class="ios-input" 
+               placeholder="Enter your password"
+               required>
+
+        <button class="ios-btn" style="margin-top:10px;">Login</button>
+    </form>
+
+    <p class="info-text" style="margin-top:15px;">
+        <a href="/forgot_password" style="color:#007AFF; font-weight:600;">
+            Forgot Password?
+        </a>
+    </p>
+
+    <p class="info-text">
+        New user? 
+        <a href="/register" style="color:#007AFF; font-weight:600;">
+            Create account
+        </a>
+    </p>
+
+</div>
+
+{% endblock %}

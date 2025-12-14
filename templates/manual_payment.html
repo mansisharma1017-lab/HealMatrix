@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Upgrade Plan{% endblock %}
+
+{% block content %}
+
+<h2>🔒 Upgrade to {{ plan }}</h2>
+
+<p>Amount to Pay: <b>₹{{ amount }}</b></p>
+
+<h3>📸 Step 1 — Scan QR to Pay</h3>
+<img src="/static/qr.png" width="240">
+
+<h3>📤 Step 2 — Upload Payment Screenshot</h3>
+
+<form method="POST" action="/upload_payment" enctype="multipart/form-data">
+    <input type="hidden" name="plan" value="{{ plan }}">
+    <input type="hidden" name="amount" value="{{ amount }}">
+
+    <input type="file" name="screenshot" required>
+    <br><br>
+
+    <button type="submit" class="predict-btn">Submit Screenshot</button>
+</form>
+
+<p style="margin-top:20px; color:#444;">Your upgrade will be activated after admin verifies payment.</p>
+
+{% endblock %}

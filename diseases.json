@@ -1,0 +1,22 @@
+[
+  {"name":"Common Cold","symptoms":["cold","cough","sneezing","runny nose"],"medicine":"Cetirizine, Rest","precautions":"Stay warm, drink fluids","severity":"Low"},
+  {"name":"Flu","symptoms":["fever","cough","fatigue","headache"],"medicine":"Paracetamol","precautions":"Rest, hydration","severity":"Medium"},
+  {"name":"COVID-19","symptoms":["fever","cough","fatigue","loss of taste"],"medicine":"Paracetamol","precautions":"Isolation, mask","severity":"High"},
+  {"name":"Malaria","symptoms":["fever","chills","sweating","headache"],"medicine":"Chloroquine","precautions":"Mosquito net","severity":"High"},
+  {"name":"Dengue","symptoms":["fever","rash","joint pain","headache"],"medicine":"Paracetamol","precautions":"No NSAIDs","severity":"High"},
+  {"name":"Typhoid","symptoms":["fever","weakness","stomach pain"],"medicine":"Antibiotics","precautions":"Safe water","severity":"High"},
+  {"name":"Food Poisoning","symptoms":["nausea","vomiting","diarrhea"],"medicine":"ORS","precautions":"Avoid street food","severity":"Medium"},
+  {"name":"Migraine","symptoms":["headache","nausea","vomiting"],"medicine":"Painkillers","precautions":"Avoid screen","severity":"Medium"},
+  {"name":"Asthma","symptoms":["wheezing","cough","shortness of breath"],"medicine":"Inhaler","precautions":"Avoid dust","severity":"High"},
+  {"name":"Bronchitis","symptoms":["cough","chest pain","fatigue"],"medicine":"Cough syrup","precautions":"No smoking","severity":"Medium"},
+  {"name":"Diabetes","symptoms":["frequent urination","thirst","fatigue"],"medicine":"Insulin","precautions":"Low sugar","severity":"High"},
+  {"name":"Hypertension","symptoms":["headache","dizziness","fatigue"],"medicine":"Amlodipine","precautions":"Low salt","severity":"High"},
+  {"name":"Anemia","symptoms":["weakness","fatigue","pale skin"],"medicine":"Iron tablets","precautions":"Iron diet","severity":"Medium"},
+  {"name":"Jaundice","symptoms":["yellow eyes","fatigue","dark urine"],"medicine":"Rest","precautions":"Avoid alcohol","severity":"High"},
+  {"name":"Allergy","symptoms":["sneezing","itchy eyes","rash"],"medicine":"Antihistamines","precautions":"Avoid allergens","severity":"Low"},
+  {"name":"UTI","symptoms":["burning urination","frequent urination","fever"],"medicine":"Antibiotics","precautions":"Drink water","severity":"Medium"},
+  {"name":"Kidney Stone","symptoms":["severe pain","blood in urine"],"medicine":"Painkiller","precautions":"Hydration","severity":"High"},
+  {"name":"Heart Disease","symptoms":["chest pain","shortness of breath"],"medicine":"Aspirin","precautions":"Exercise","severity":"High"},
+  {"name":"Pneumonia","symptoms":["fever","chest pain","cough"],"medicine":"Antibiotics","precautions":"Vaccination","severity":"High"},
+  {"name":"Tuberculosis","symptoms":["long cough","weight loss","night sweats"],"medicine":"Anti-TB drugs","precautions":"Mask","severity":"High"}
+]

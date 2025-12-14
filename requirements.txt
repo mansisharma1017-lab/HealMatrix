@@ -1,0 +1,9 @@
+Flask
+gunicorn
+python-dotenv
+werkzeug
+razorpay
+fuzzywuzzy
+python-Levenshtein
+nltk
+reportlab

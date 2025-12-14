@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Admin Revenue{% endblock %}
+
+{% block content %}
+
+<h1>💰 Revenue Dashboard</h1>
+
+<!-- TOTAL REVENUE BOX -->
+<div style="
+    padding:15px;
+    background:var(--theme-card-bg);
+    border-left:5px solid #3b4cc0;
+    border-radius:10px;
+    margin-bottom:20px;
+    font-size:18px;
+">
+    <b>Total Earnings:</b> ₹{{ total }}
+</div>
+
+<!-- PAYMENT TABLE -->
+<table border="1" width="100%" cellpadding="10" style="border-collapse:collapse;">
+    <tr style="background:var(--theme-soft); font-weight:bold;">
+        <th>User</th>
+        <th>Plan</th>
+        <th>Amount (₹)</th>
+        <th>Time</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for p in payments %}
+    <tr>
+        <td>{{ p.username }}</td>
+        <td>{{ p.plan }}</td>
+        <td>₹{{ p.amount }}</td>
+        <td>{{ p.timestamp }}</td>
+        <td>
+            {% if p.status == "PENDING" %}
+                <span style="color:orange; font-weight:bold;">PENDING</span>
+            {% elif p.status == "APPROVED" %}
+                <span style="color:green; font-weight:bold;">APPROVED</span>
+            {% else %}
+                <span style="color:red; font-weight:bold;">REJECTED</span>
+            {% endif %}
+        </td>
+
+        <td>
+            {% if p.status == "PENDING" %}
+                <a href="/admin/approve_payment/{{ p.id }}" style="color:green; font-weight:bold;">Approve</a> |
+                <a href="/admin/reject_payment/{{ p.id }}" style="color:red; font-weight:bold;">Reject</a>
+            {% else %}
+                -
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
