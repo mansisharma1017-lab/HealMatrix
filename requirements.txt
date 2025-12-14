@@ -1,9 +1,8 @@
-Flask
-gunicorn
-python-dotenv
-werkzeug
-razorpay
-fuzzywuzzy
-python-Levenshtein
-nltk
-reportlab
+Flask==3.0.0
+gunicorn==21.2.0
+python-dotenv==1.0.1
+razorpay==1.4.2
+reportlab==4.1.0
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.25.1
+nltk==3.9.1
