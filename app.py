@@ -20,6 +20,7 @@ from reportlab.pdfgen import canvas
 # ---------------- ADVANCED AI EMERGENCY ENGINE ----------------
 
 from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz as rapid_fuzz
 
 EMERGENCY_SYMPTOMS = {
     "chest pain": {
@@ -74,7 +75,7 @@ def ai_emergency_check(text):
     triggered = []
 
     for symptom, info in EMERGENCY_SYMPTOMS.items():
-        similarity = fuzz.partial_ratio(symptom, text)
+        similarity = rapid_fuzz.partial_ratio(symptom, text)
 
         if similarity > 70:  # fuzzy matching threshold
             triggered.append(info["msg"])
