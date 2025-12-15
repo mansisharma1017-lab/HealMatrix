@@ -187,8 +187,12 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
+    cur.execute("DROP TABLE IF EXISTS users")
+    cur.execute("DROP TABLE IF EXISTS queries")
+    cur.execute("DROP TABLE IF EXISTS payments")
+
     cur.execute("""
-        CREATE TABLE IF NOT EXISTS users (
+        CREATE TABLE users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE,
             password_hash TEXT,
@@ -200,23 +204,23 @@ def init_db():
     """)
 
     cur.execute("""
-        CREATE TABLE IF NOT EXISTS queries (
+        CREATE TABLE queries (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             timestamp TEXT,
             symptoms TEXT,
             predicted TEXT,
-            FOREIGN KEY(user_id) REFERENCES users(id)
+            health_score INTEGER
         )
     """)
 
     cur.execute("""
-        CREATE TABLE IF NOT EXISTS payments (
+        CREATE TABLE payments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             amount INTEGER,
             plan TEXT,
-            timestamp TEXT
+            timestamp TEXT,
             status TEXT DEFAULT 'PENDING'
         )
     """)
