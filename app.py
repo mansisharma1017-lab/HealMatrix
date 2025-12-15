@@ -15,6 +15,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
+
 # ---------------- EMERGENCY CHECK SYSTEM ----------------
 
 # ---------------- ADVANCED AI EMERGENCY ENGINE ----------------
@@ -113,23 +118,9 @@ def get_daily_tip():
 
 # ------------------ OFFLINE AI ENGINE (UNLIMITED SYMPTOMS) ------------------
 
-import nltk
 from fuzzywuzzy import fuzz
 
 import os
-
-if os.path.exists("appdata.db"):
-    os.remove("appdata.db")
-
-
-# Download nltk data (only first time)
-nltk.download('punkt')
-nltk.download('stopwords')
-
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-
-stop_words = set(stopwords.words("english"))
 
 def clean_text(text):
     text = text.lower()
@@ -166,6 +157,14 @@ def ai_predict(text_input, diseases):
 
 # ----- Config -----
 APP_DIR = os.path.dirname(__file__)
+
+nltk.data.path.append(os.path.join(APP_DIR, "nltk_data"))
+
+try:
+    stop_words = set(stopwords.words("english"))
+except LookupError:
+    stop_words = set()
+
 DB_PATH = os.path.join(APP_DIR, "appdata.db")
 REPORTS_DIR = os.path.join(APP_DIR, "reports")
 if not os.path.exists(REPORTS_DIR):
@@ -187,24 +186,22 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
-    cur.execute("DROP TABLE IF EXISTS users")
-    cur.execute("DROP TABLE IF EXISTS queries")
-    cur.execute("DROP TABLE IF EXISTS payments")
-
     cur.execute("""
-        CREATE TABLE users (
+        CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE,
             password_hash TEXT,
             free_uses INTEGER DEFAULT 4,
             prediction_count INTEGER DEFAULT 0,
             plan TEXT DEFAULT 'FREE',
-            plan_expiry TEXT
+            plan_expiry TEXT,
+            security_question TEXT,
+            security_answer TEXT
         )
     """)
 
     cur.execute("""
-        CREATE TABLE queries (
+        CREATE TABLE IF NOT EXISTS queries (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             timestamp TEXT,
@@ -215,7 +212,7 @@ def init_db():
     """)
 
     cur.execute("""
-        CREATE TABLE payments (
+        CREATE TABLE IF NOT EXISTS payments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             amount INTEGER,
@@ -244,6 +241,19 @@ def save_query(user_id, symptoms_list, predicted_name):
         "INSERT INTO queries (user_id, timestamp, symptoms, predicted) VALUES (?, ?, ?, ?)",
         (user_id, datetime.utcnow().isoformat(), ",".join(symptoms_list), predicted_name or "")
     )
+    save_query(
+    user_id,
+    text_input.split(),
+    disease["name"]
+    )
+
+    cur.execute("""
+        UPDATE queries
+        SET health_score = ?
+        WHERE id = (SELECT MAX(id) FROM queries WHERE user_id=?)
+    """, (health_score, user_id))
+
+
     conn.commit()
     conn.close()
 
@@ -937,7 +947,7 @@ def verify_answer():
     row = cur.fetchone()
     conn.close()
 
-    if row and row[0] == answer:
+    if row and check_password_hash(row[0], answer):
         return render_template("reset_password.html")
 
     flash("Incorrect answer!", "error")
@@ -971,4 +981,5 @@ def service_worker():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=False)
+
