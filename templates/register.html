@@ -25,11 +25,24 @@
                required>
 
         <label><b>Security Question</b></label>
-        <input type="text" 
-               name="security_question" 
-               class="ios-input"
-               placeholder="Example: What is your pet name?"
-               required>
+        <select name="security_question" class="ios-input ios-select" required>
+            <option value="" disabled selected>
+                Select a security question
+            </option>
+            <option value="What is your pet name?">
+                What is your pet name?
+            </option>
+            <option value="What is your first school name?">
+                What is your first school name?
+            </option>
+            <option value="Who is your favourite teacher?">
+                Who is your favourite teacher?
+            </option>
+            <option value="What is your favourite food?">
+                What is your favourite food?
+            </option>
+        </select>
+
 
         <label><b>Security Answer</b></label>
         <input type="text" 
