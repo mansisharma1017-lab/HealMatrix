@@ -234,25 +234,20 @@ init_db()
 
 # ----- Utility functions -----
 
-def save_query(user_id, symptoms_list, predicted_name):
+def save_query(user_id, symptoms_list, predicted_name, health_score):
     conn = get_db_conn()
     cur = conn.cursor()
-    cur.execute(
-        "INSERT INTO queries (user_id, timestamp, symptoms, predicted) VALUES (?, ?, ?, ?)",
-        (user_id, datetime.utcnow().isoformat(), ",".join(symptoms_list), predicted_name or "")
-    )
-    save_query(
-    user_id,
-    text_input.split(),
-    disease["name"]
-    )
 
     cur.execute("""
-        UPDATE queries
-        SET health_score = ?
-        WHERE id = (SELECT MAX(id) FROM queries WHERE user_id=?)
-    """, (health_score, user_id))
-
+        INSERT INTO queries (user_id, timestamp, symptoms, predicted, health_score)
+        VALUES (?, ?, ?, ?, ?)
+    """, (
+        user_id,
+        datetime.utcnow().isoformat(),
+        ",".join(symptoms_list),
+        predicted_name or "",
+        health_score
+    ))
 
     conn.commit()
     conn.close()
@@ -881,14 +876,27 @@ def predict():
 
     disease, score = ai_predict(text_input, diseases)
 
+    if disease is None:
+        disease = {
+            "name": "Unknown",
+            "severity": "Unknown",
+            "medicine": "Consult a doctor",
+            "precautions": "Symptoms unclear. Please seek medical advice."
+        }
+        score = 30
+
+
     probability = round(score / 100 * 80 + 20)
     health_score = 100 - probability
 
     # Save query
-    cur.execute("""
-        INSERT INTO queries (user_id, timestamp, symptoms, predicted, health_score)
-        VALUES (?, ?, ?, ?, ?)
-    """, (user_id, datetime.utcnow().isoformat(), text_input, disease["name"], health_score))
+    save_query(
+    user_id,
+    text_input.split(","),
+    disease["name"],
+    health_score
+    )
+
 
     # Decrease free uses if not premium
     if not is_paid:
