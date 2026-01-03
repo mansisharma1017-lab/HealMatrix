@@ -850,27 +850,10 @@ def predict():
         return redirect(url_for("login"))
 
     user_id = session["user_id"]
-
-    conn = get_db_conn()
-    cur = conn.cursor()
-
-    # Get free uses
-    cur.execute("SELECT free_uses FROM users WHERE id=?", (user_id,))
-    row = cur.fetchone()
-    free_left = row[0] if row else 0
-
-    # Check premium
-    is_paid = has_active_plan(user_id)
-
-    # If user has no free predictions and no premium plan
-    if free_left <= 0 and not is_paid:
-        flash("Your free predictions are over. Please upgrade your plan.", "error")
-        return redirect(url_for("upgrade"))
-
     text_input = request.form["symptoms"]
+
     warnings, emergency_level = ai_emergency_check(text_input)
 
-    # LOAD diseases
     with open("diseases.json", "r") as f:
         diseases = json.load(f)
 
@@ -885,43 +868,54 @@ def predict():
         }
         score = 30
 
-
     probability = round(score / 100 * 80 + 20)
     health_score = 100 - probability
 
-    # Save query
-    # Save query
-    save_query(
+    conn = get_db_conn()
+    cur = conn.cursor()
+
+    # get free uses
+    cur.execute("SELECT free_uses FROM users WHERE id=?", (user_id,))
+    free_left = cur.fetchone()[0]
+
+    is_paid = has_active_plan(user_id)
+
+    if free_left <= 0 and not is_paid:
+        conn.close()
+        flash("Your free predictions are over. Please upgrade.", "error")
+        return redirect(url_for("upgrade"))
+
+    # save query
+    cur.execute("""
+        INSERT INTO queries (user_id, timestamp, symptoms, predicted, health_score)
+        VALUES (?, ?, ?, ?, ?)
+    """, (
         user_id,
-        text_input.split(","),
+        datetime.utcnow().isoformat(),
+        text_input,
         disease["name"],
         health_score
-    )
+    ))
 
-    # Decrease free uses if not premium
     if not is_paid:
-        conn2 = get_db_conn()
-        cur2 = conn2.cursor()
-        cur2.execute(
+        cur.execute(
             "UPDATE users SET free_uses = free_uses - 1 WHERE id=?",
             (user_id,)
-    )
-    conn2.commit()
-    conn2.close()
+        )
 
-
-    result = {
-        "name": disease["name"],
-        "probability": probability,
-        "severity": disease["severity"],
-        "medicine": disease["medicine"],
-        "precautions": disease["precautions"],
-        "health_score": health_score
-    }
+    conn.commit()
+    conn.close()
 
     return render_template(
         "result.html",
-        result=result,
+        result={
+            "name": disease["name"],
+            "probability": probability,
+            "severity": disease["severity"],
+            "medicine": disease["medicine"],
+            "precautions": disease["precautions"],
+            "health_score": health_score
+        },
         user_text=text_input,
         warnings=warnings,
         emergency_level=emergency_level
