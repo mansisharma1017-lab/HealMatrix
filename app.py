@@ -890,20 +890,25 @@ def predict():
     health_score = 100 - probability
 
     # Save query
+    # Save query
     save_query(
-    user_id,
-    text_input.split(","),
-    disease["name"],
-    health_score
+        user_id,
+        text_input.split(","),
+        disease["name"],
+        health_score
     )
-
 
     # Decrease free uses if not premium
     if not is_paid:
-        cur.execute("UPDATE users SET free_uses = free_uses - 1 WHERE id=?", (user_id,))
+        conn2 = get_db_conn()
+        cur2 = conn2.cursor()
+        cur2.execute(
+            "UPDATE users SET free_uses = free_uses - 1 WHERE id=?",
+            (user_id,)
+    )
+    conn2.commit()
+    conn2.close()
 
-    conn.commit()
-    conn.close()
 
     result = {
         "name": disease["name"],
