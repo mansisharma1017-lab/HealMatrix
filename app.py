@@ -17,8 +17,6 @@ from reportlab.pdfgen import canvas
 
 import nltk
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-
 
 # ---------------- EMERGENCY CHECK SYSTEM ----------------
 
@@ -124,7 +122,10 @@ import os
 
 def clean_text(text):
     text = text.lower()
-    words = word_tokenize(text)
+
+    # SAFE tokenizer (no nltk punkt needed)
+    words = text.replace(",", " ").split()
+
     words = [w for w in words if w.isalpha() and w not in stop_words]
     return words
 
@@ -245,12 +246,13 @@ def save_query(user_id, symptoms_list, predicted_name, health_score):
         user_id,
         datetime.utcnow().isoformat(),
         ",".join(symptoms_list),
-        predicted_name or "",
+        predicted_name,
         health_score
     ))
 
     conn.commit()
     conn.close()
+
 
 def generate_pdf_report(username, name, age, gender, symptoms, predicted):
     from reportlab.lib.colors import lightgrey, black
@@ -850,7 +852,12 @@ def predict():
         return redirect(url_for("login"))
 
     user_id = session["user_id"]
-    text_input = request.form.get("symptoms", "")
+    text_input = request.form.get("symptoms", "").strip()
+
+    if not text_input:
+        flash("Please enter symptoms", "error")
+        return redirect(url_for("index"))
+
 
     warnings, emergency_level = ai_emergency_check(text_input)
 
