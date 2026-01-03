@@ -850,7 +850,7 @@ def predict():
         return redirect(url_for("login"))
 
     user_id = session["user_id"]
-    text_input = request.form["symptoms"]
+    text_input = request.form.get("symptoms", "")
 
     warnings, emergency_level = ai_emergency_check(text_input)
 
@@ -874,9 +874,10 @@ def predict():
     conn = get_db_conn()
     cur = conn.cursor()
 
-    # get free uses
+    # Free uses check
     cur.execute("SELECT free_uses FROM users WHERE id=?", (user_id,))
-    free_left = cur.fetchone()[0]
+    row = cur.fetchone()
+    free_left = row[0] if row else 0
 
     is_paid = has_active_plan(user_id)
 
@@ -885,7 +886,7 @@ def predict():
         flash("Your free predictions are over. Please upgrade.", "error")
         return redirect(url_for("upgrade"))
 
-    # save query
+    # Save query
     cur.execute("""
         INSERT INTO queries (user_id, timestamp, symptoms, predicted, health_score)
         VALUES (?, ?, ?, ?, ?)
@@ -920,6 +921,7 @@ def predict():
         warnings=warnings,
         emergency_level=emergency_level
     )
+
 
 @app.route("/forgot_password", methods=["GET", "POST"])
 def forgot_password():

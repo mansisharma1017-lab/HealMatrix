@@ -7,8 +7,16 @@
 
 <p>Amount to Pay: <b>₹{{ amount }}</b></p>
 
-<h3>📸 Step 1 — Scan QR to Pay</h3>
-<img src="/static/qr.png" width="240">
+<div class="ios-card" style="text-align:center; margin-top:20px;">
+    <h3>📷 Scan QR to Pay</h3>
+
+    <img 
+        src="{{ url_for('static', filename='icons/qr.png') }}"
+        alt="Payment QR"
+        style="max-width:220px; margin-top:12px; border-radius:14px; box-shadow:0 4px 14px rgba(0,0,0,0.2);"
+    >
+</div>
+
 
 <h3>📤 Step 2 — Upload Payment Screenshot</h3>
 
